@@ -49,7 +49,7 @@ button:disabled, .btn:disabled {
 
 input, select, textarea {
   font-family: var(--font);
-  font-size: 1rem;
+  font-size: 16px; /* prevents iOS zoom on focus */
 }
 
 .container {
@@ -143,3 +143,27 @@ input, select, textarea {
 .badge-low { color: var(--text-muted); }
 .badge-medium { color: var(--accent); }
 .badge-high { color: var(--danger); }
+
+/* Mobile-friendly: touch targets and spacing */
+@media (max-width: 640px) {
+  .container { padding: 0 0.75rem; }
+  .card { padding: 1rem; }
+  button, .btn {
+    min-height: 44px; /* comfortable touch target */
+    padding: 0.65rem 1rem;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    min-height: 44px;
+    padding: 0.65rem 0.75rem;
+  }
+}
+@media (max-width: 480px) {
+  body { font-size: 15px; }
+  .container { padding: 0 0.5rem; }
+}
+/* Better touch feedback on tap */
+button, .btn, a, input, select, textarea {
+  -webkit-tap-highlight-color: rgba(99, 102, 241, 0.2);
+}
