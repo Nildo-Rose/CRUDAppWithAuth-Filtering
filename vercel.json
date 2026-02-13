@@ -5,6 +5,13 @@
   "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/dist/frontend/browser",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "https://YOUR_BACKEND_URL/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

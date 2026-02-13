@@ -29,11 +29,18 @@ export interface PaginatedResponse<T> {
   pagination: { page: number; limit: number; total: number; totalPages: number };
 }
 
+/** API base URL: in dev uses same host as page + port 3000 (works on PC and mobile); in prod uses env.apiUrl */
+function getApiBase(): string {
+  if (!environment.production && typeof window !== 'undefined') {
+    return `${window.location.protocol}//${window.location.hostname}:3000/api`;
+  }
+  return environment.apiUrl;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  /** Relative /api in dev (proxy handles PC + mobile); env.apiUrl in prod */
   private get base(): string {
-    return environment.apiUrl;
+    return getApiBase();
   }
 
   constructor(private http: HttpClient) {}

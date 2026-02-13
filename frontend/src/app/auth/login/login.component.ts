@@ -68,7 +68,10 @@ export class LoginComponent {
       next: () => {},
       error: (err) => {
         this.loading = false;
-        this.error = err.error?.error || 'Login failed';
+        const msg = err.error?.error;
+        if (msg) this.error = msg;
+        else if (err.status === 0) this.error = 'Cannot reach server. Is the backend running at http://localhost:3000?';
+        else this.error = 'Login failed';
       },
     });
   }

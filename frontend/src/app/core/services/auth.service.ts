@@ -34,8 +34,15 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  private get apiBase(): string {
+    if (!environment.production && typeof window !== 'undefined') {
+      return `${window.location.protocol}//${window.location.hostname}:3000/api`;
+    }
+    return environment.apiUrl;
+  }
+
   private loadUser(): void {
-    this.http.get<User>(`${environment.apiUrl}/auth/me`).pipe(
+    this.http.get<User>(`${this.apiBase}/auth/me`).pipe(
       tap((user) => this.userSignal.set(user)),
       catchError(() => {
         this.tokenSignal.set(null);
@@ -54,7 +61,7 @@ export class AuthService {
   }
 
   register(email: string, password: string, name: string) {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, { email, password, name }).pipe(
+    return this.http.post<AuthResponse>(`${this.apiBase}/auth/register`, { email, password, name }).pipe(
       tap((res) => {
         localStorage.setItem('token', res.token);
         this.tokenSignal.set(res.token);
@@ -65,7 +72,7 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, { email, password }).pipe(
+    return this.http.post<AuthResponse>(`${this.apiBase}/auth/login`, { email, password }).pipe(
       tap((res) => {
         localStorage.setItem('token', res.token);
         this.tokenSignal.set(res.token);

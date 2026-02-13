@@ -2,6 +2,15 @@
 
 Follow these steps **exactly** so the app deploys instead of 404.
 
+## How API URL works (dev vs prod)
+
+- **Local dev (PC and mobile):** The app uses the **same host as the page** with port **3000** (e.g. `http://localhost:3000/api` on PC, `http://<your-IP>:3000/api` on mobile). No proxy needed; ensure the backend is running and reachable.
+- **Production (Vercel):** The app uses `environment.apiUrl`, which is **`/api`**. So the frontend calls your Vercel domain at `/api/...`. For that to work you must either:
+  1. **Proxy to your backend** – In root `vercel.json`, the first rewrite sends `/api/:path*` to your backend. **Replace `YOUR_BACKEND_URL`** with your real API base (e.g. `https://your-app.railway.app` or `https://your-api.onrender.com`), then redeploy. Requests to `https://your-app.vercel.app/api/auth/login` will be proxied to `https://YOUR_BACKEND_URL/api/auth/login`.
+  2. **Or** deploy no backend and point the frontend at an external API: set `apiUrl` in `frontend/src/environments/environment.prod.ts` to your full API base (e.g. `https://your-api.railway.app/api`), then remove the `/api/:path*` rewrite in `vercel.json` so the SPA rewrite doesn’t catch `/api`.
+
+If you don’t have a backend URL yet, **remove** the first rewrite in `vercel.json` (the one with `"source": "/api/:path*"`). The app will load; login will fail until you add a backend and either proxy it or set `apiUrl` as above. If you use **Option B** (root = `frontend`), edit **frontend/vercel.json** the same way.
+
 ## Option A: Build from repo root (recommended)
 
 1. Open your project on [Vercel](https://vercel.com) → **Settings** → **General**.
