@@ -66,7 +66,14 @@ npm install
 npm start
 ```
 
-App runs at **http://localhost:4200**. It expects the API at `http://localhost:3000` (see `frontend/src/environments/environment.ts`).
+App runs at **http://localhost:4200**. The dev server proxies `/api` to the backend, so the same setup works on **PC and mobile** (see below).
+
+### PC and mobile (same network)
+
+1. Start the backend: `cd backend && npm start`.
+2. Start the frontend: `cd frontend && npm start` (serves with `--host 0.0.0.0` so the network can connect).
+3. **On PC:** open **http://localhost:4200**.
+4. **On phone/tablet (same Wi‑Fi):** find your PC’s IP (e.g. `ipconfig` on Windows), then open **http://\<PC-IP\>:4200** (e.g. `http://192.168.1.5:4200`). Login and API calls go through the dev server proxy to the backend, so both work the same way.
 
 ### First run
 

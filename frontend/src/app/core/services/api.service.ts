@@ -31,7 +31,10 @@ export interface PaginatedResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private base = environment.apiUrl;
+  /** Relative /api in dev (proxy handles PC + mobile); env.apiUrl in prod */
+  private get base(): string {
+    return environment.apiUrl;
+  }
 
   constructor(private http: HttpClient) {}
 
