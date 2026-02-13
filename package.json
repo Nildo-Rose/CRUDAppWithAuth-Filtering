@@ -1,0 +1,7 @@
+{
+  "name": "crud-app-with-auth-filtering",
+  "private": true,
+  "scripts": {
+    "notes:pdf": "npx -y md-to-pdf PROJECT_NOTES.md -o PROJECT_NOTES.pdf"
+  }
+}

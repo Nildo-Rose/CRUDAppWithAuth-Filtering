@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Notes - CRUD App With Auth + Filtering</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      color: #1a1a1a;
+      background: #fff;
+    }
+    .save-pdf {
+      background: #e0f2fe;
+      border: 1px solid #0ea5e9;
+      padding: 0.75rem 1rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .save-pdf strong { color: #0369a1; }
+    h1 { font-size: 1.75rem; margin-top: 0; border-bottom: 2px solid #333; padding-bottom: 0.5rem; }
+    h2 { font-size: 1.35rem; margin-top: 2rem; color: #334155; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; color: #475569; }
+    p { margin: 0.75rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+    th, td { border: 1px solid #cbd5e1; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #f1f5f9; font-weight: 600; }
+    tr:nth-child(even) { background: #f8fafc; }
+    code, .code { font-family: 'Consolas', 'Monaco', monospace; background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+    pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; }
+    pre code { background: none; padding: 0; color: inherit; }
+    ul { margin: 0.5rem 0; padding-left: 1.5rem; }
+    li { margin: 0.25rem 0; }
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 2rem 0; }
+    @media print {
+      body { padding: 1rem; }
+      .save-pdf { display: none !important; }
+      h2 { page-break-after: avoid; }
+      table, pre { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="save-pdf"><strong>Save as PDF:</strong> Press <kbd>Ctrl+P</kbd> (or Cmd+P on Mac), then choose &ldquo;Save as PDF&rdquo; or &ldquo;Microsoft Print to PDF&rdquo; as the destination.</div>
+
+  <h1>Project Notes: Line-by-Line Code &amp; Commands Reference</h1>
+  <p>This document explains <strong>every file</strong>, <strong>every line (or logical block) of code</strong>, and <strong>every command</strong> used in the CRUD App With Auth + Filtering project, and <strong>why</strong> each was used.</p>
+
+  <hr>
+  <h2>Part 1: Commands Executed and Why</h2>
+  <table>
+    <thead><tr><th>Command</th><th>Where</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><code>cd backend</code></td><td>Backend folder</td><td>Change into the Node.js API directory so all following commands run in that context.</td></tr>
+      <tr><td><code>npm install</code></td><td>backend/</td><td>Install backend dependencies (express, bcryptjs, jsonwebtoken, better-sqlite3, etc.) from package.json. Required before running the server.</td></tr>
+      <tr><td><code>cp .env.example .env</code> or creating .env</td><td>backend/</td><td>Copy environment template so the app has PORT, JWT_SECRET, NODE_ENV. Needed for dotenv to load config.</td></tr>
+      <tr><td><code>npm run seed</code></td><td>backend/</td><td>Run node scripts/seed.js to create demo user (demo@example.com / password123) and sample projects/tasks. Optional but useful for testing.</td></tr>
+      <tr><td><code>npm start</code></td><td>backend/</td><td>Run node server.js to start the Express API on port 3000. Must be running for the frontend to call the API.</td></tr>
+      <tr><td><code>npm run dev</code></td><td>backend/</td><td>Same as start but with node --watch server.js so the server restarts when files change.</td></tr>
+      <tr><td><code>cd frontend</code></td><td>Frontend folder</td><td>Change into the Angular app directory.</td></tr>
+      <tr><td><code>npm install</code></td><td>frontend/</td><td>Install Angular and frontend dependencies from frontend/package.json. Required before ng serve or ng build.</td></tr>
+      <tr><td><code>npx ng serve</code></td><td>frontend/</td><td>Start the Angular development server (default port 4200). Serves the app with live reload.</td></tr>
+      <tr><td><code>npx ng serve --open</code></td><td>frontend/</td><td>Same as above but also opens the default browser to localhost:4200.</td></tr>
+      <tr><td><code>npx ng build</code></td><td>frontend/</td><td>Compile the Angular app for production (output in dist/frontend). Used to verify the project compiles and to fix build errors.</td></tr>
+    </tbody>
+  </table>
+
+  <hr>
+  <h2>Part 2: Backend Files — Line-by-Line</h2>
+
+  <h3>backend/package.json</h3>
+  <ul>
+    <li><strong>Purpose:</strong> Defines the Node.js project, scripts, and dependencies for the API.</li>
+    <li><strong>name:</strong> Package name for the backend.</li>
+    <li><strong>version:</strong> Semantic version.</li>
+    <li><strong>main:</strong> Entry file is server.js.</li>
+    <li><strong>scripts:</strong> start (node server.js), dev (node --watch server.js), seed (node scripts/seed.js).</li>
+    <li><strong>dependencies:</strong> bcryptjs, cors, dotenv, express, express-validator, jsonwebtoken, better-sqlite3.</li>
+  </ul>
+
+  <h3>backend/.env.example and backend/.env</h3>
+  <ul>
+    <li><strong>PORT:</strong> Port the server listens on (default 3000).</li>
+    <li><strong>JWT_SECRET:</strong> Secret key for signing/verifying JWTs.</li>
+    <li><strong>NODE_ENV:</strong> development or production.</li>
+  </ul>
+
+  <h3>backend/server.js</h3>
+  <table>
+    <thead><tr><th>Line(s)</th><th>Code</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>require('dotenv').config();</code></td><td>Load .env into process.env before any code uses it.</td></tr>
+      <tr><td>2–6</td><td>require express, cors, route modules</td><td>Import the app and route handlers.</td></tr>
+      <tr><td>8</td><td><code>const app = express();</code></td><td>Create the Express application.</td></tr>
+      <tr><td>9</td><td><code>const PORT = process.env.PORT || 3000;</code></td><td>Use env port or default 3000.</td></tr>
+      <tr><td>11</td><td><code>app.use(cors(...));</code></td><td>Allow any origin and credentials for local dev.</td></tr>
+      <tr><td>12</td><td><code>app.use(express.json());</code></td><td>Parse JSON request bodies into req.body.</td></tr>
+      <tr><td>14–16</td><td>app.use('/api/auth', ...) etc.</td><td>Mount auth, projects, and task routes.</td></tr>
+      <tr><td>18</td><td><code>app.get('/api/health', ...)</code></td><td>Health check endpoint; returns { ok: true }.</td></tr>
+      <tr><td>19–23</td><td>app.use((err, ...) => ...)</td><td>Global error handler; 500 and generic message.</td></tr>
+      <tr><td>25–27</td><td>app.listen(PORT, ...)</td><td>Start listening on PORT; log the URL.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>backend/db/database.js</h3>
+  <table>
+    <thead><tr><th>Line(s)</th><th>Code</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>1–2</td><td>require better-sqlite3, path</td><td>SQLite driver and path for DB file.</td></tr>
+      <tr><td>4–5</td><td>dbPath, new Database(dbPath)</td><td>Open or create SQLite database at db/app.db.</td></tr>
+      <tr><td>7–14</td><td>CREATE TABLE users</td><td>Users: id, email (unique), password_hash, name, created_at.</td></tr>
+      <tr><td>16–25</td><td>CREATE TABLE projects</td><td>Projects: id, user_id, name, description, status, timestamps. FK to users.</td></tr>
+      <tr><td>27–36</td><td>CREATE TABLE tasks</td><td>Tasks: id, project_id, title, description, status, priority, timestamps. FK to projects.</td></tr>
+      <tr><td>38–39</td><td>CREATE INDEX</td><td>Indexes on projects(user_id) and tasks(project_id).</td></tr>
+      <tr><td>42</td><td>module.exports = db</td><td>Export DB instance for routes and seed.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>backend/middleware/auth.js</h3>
+  <p>Reads Authorization header, verifies JWT with JWT_SECRET, sets req.user = { id, email }; on failure returns 401.</p>
+
+  <h3>backend/middleware/validate.js</h3>
+  <p>Uses validationResult(req); if errors not empty, returns 400 with field/message list; else next().</p>
+
+  <h3>backend/routes/auth.js</h3>
+  <p><strong>POST /register:</strong> Validates email, password (min 6), name; hashes password; inserts user; returns user + JWT. Handles duplicate email with 400.</p>
+  <p><strong>POST /login:</strong> Validates email, password; finds user; compares password; returns user + JWT or 401.</p>
+  <p><strong>GET /me:</strong> Protected by auth middleware; returns current user (id, email, name) or 404.</p>
+
+  <h3>backend/routes/projects.js</h3>
+  <p>All routes use auth. <strong>GET /</strong>: list with pagination, search (name/description), status filter. <strong>GET /:id</strong>: one project. <strong>POST /</strong>: create. <strong>PUT /:id</strong>: update. <strong>DELETE /:id</strong>: delete tasks then project.</p>
+
+  <h3>backend/routes/tasks.js</h3>
+  <p>All routes use auth. ensureProjectAccess(projectId, userId) and getTask(id, userId). <strong>GET /:projectId/tasks</strong>: list with search, status, priority. <strong>GET/POST/PUT/DELETE</strong> for single task under project.</p>
+
+  <h3>backend/scripts/seed.js</h3>
+  <p>Loads .env; hashes password123; INSERT OR IGNORE user id=1 (demo@example.com); deletes existing demo projects/tasks; inserts 3 projects and tasks per project; logs demo credentials.</p>
+
+  <hr>
+  <h2>Part 3: Frontend Files — Line-by-Line</h2>
+
+  <h3>frontend/package.json</h3>
+  <p>Scripts: ng, start (ng serve), build (ng build), watch. Dependencies: Angular 18 packages, rxjs, zone.js. devDependencies: Angular CLI, TypeScript 5.4.</p>
+
+  <h3>frontend/angular.json</h3>
+  <p>Single app "frontend"; sourceRoot src; prefix app; build options (outputPath, index, main, polyfills, tsConfig, assets, styles); serve with dev server.</p>
+
+  <h3>frontend/tsconfig.json and tsconfig.app.json</h3>
+  <p>Strict TypeScript and Angular options; target ES2022; app extends base with files and include for src.</p>
+
+  <h3>frontend/src/index.html</h3>
+  <p>HTML5; meta charset, title, base href="/"; viewport; Google Fonts (DM Sans); body with &lt;app-root&gt;.</p>
+
+  <h3>frontend/src/main.ts</h3>
+  <p>bootstrapApplication(AppComponent, appConfig).catch(...) — Angular 18+ standalone bootstrap.</p>
+
+  <h3>frontend/src/styles.css</h3>
+  <p>:root CSS variables (theme colors, radius, font); .container, .card, .form-group, .btn-primary/secondary/danger, .badge and .badge-* for status/priority.</p>
+
+  <h3>frontend/src/environments</h3>
+  <p>environment.ts: production false, apiUrl http://localhost:3000/api. environment.prod.ts: production true, apiUrl /api.</p>
+
+  <h3>frontend/src/app/app.config.ts</h3>
+  <p>provideZoneChangeDetection; provideRouter(routes); provideHttpClient(withInterceptors([authInterceptor])).</p>
+
+  <h3>frontend/src/app/app.routes.ts</h3>
+  <p>Default redirect to projects; /login, /register lazy-loaded; /projects, /projects/new, /projects/:id, /projects/:id/edit with authGuard; ** redirect to projects.</p>
+
+  <h3>frontend/src/app/app.component.ts</h3>
+  <p>Shell: header (if logged in) with logo, Projects link (routerLinkActive), user name, Log out; main with router-outlet.</p>
+
+  <h3>frontend/src/app/core/services/auth.service.ts</h3>
+  <p>tokenSignal, userSignal, currentUser computed; getStoredToken; loadUser (GET /auth/me); isLoggedIn, getToken; register/login (store token, set signals, navigate); logout (clear, navigate to /login).</p>
+
+  <h3>frontend/src/app/core/guards/auth.guard.ts</h3>
+  <p>authGuard: if isLoggedIn() return true; else navigate to /login, return false.</p>
+
+  <h3>frontend/src/app/core/interceptors/auth.interceptor.ts</h3>
+  <p>If token exists, clone request with Authorization: Bearer &lt;token&gt;; next(req).</p>
+
+  <h3>frontend/src/app/core/services/api.service.ts</h3>
+  <p>Project, Task, PaginatedResponse interfaces. getProjects (page, limit, search, status), getProject, createProject, updateProject, deleteProject. getTasks (projectId, search, status, priority), getTask, createTask, updateTask, deleteTask.</p>
+
+  <h3>frontend/src/app/auth/login and register</h3>
+  <p>Reactive forms (email/password for login; name, email, password min 6 for register); submit calls auth.login/register; error message from err.error?.error.</p>
+
+  <h3>frontend/src/app/projects/project-list</h3>
+  <p>Signals: projects, loading, page, totalPages; search, statusFilter; filters card; *ngFor projects with View/Edit/Delete; pagination; load(), applyFilters(), goPage(), delete(p).</p>
+
+  <h3>frontend/src/app/projects/project-form</h3>
+  <p>Form: name, description, status. ngOnInit: if route id, fetch project and patchValue. onSubmit: create or update; navigate to /projects/:id on success.</p>
+
+  <h3>frontend/src/app/projects/project-detail</h3>
+  <p>Project toolbar; tasks section with Add task, app-task-form (projectId, task, saved, cancel); task filters (search, status, priority); task list with Edit/Delete; loadTasks(), openNewTask, editTask, closeTaskForm, onTaskSaved, deleteTask.</p>
+
+  <h3>frontend/src/app/tasks/task-form</h3>
+  <p>input projectId (required), task; output saved, cancel. Form: title, description, status, priority. effect to patchValue when task() set. onSubmit: create or update; saved.emit() on success.</p>
+
+  <hr>
+  <h2>Part 4: File Tree Summary</h2>
+  <pre><code>backend/
+  .env, .env.example, package.json, server.js
+  db/database.js
+  middleware/auth.js, validate.js
+  routes/auth.js, projects.js, tasks.js
+  scripts/seed.js
+
+frontend/
+  package.json, angular.json, tsconfig.json, tsconfig.app.json
+  src/index.html, main.ts, styles.css
+  src/assets/.gitkeep
+  src/environments/environment.ts, environment.prod.ts
+  src/app/app.config.ts, app.routes.ts, app.component.ts
+  src/app/core/services/auth.service.ts, api.service.ts
+  src/app/core/guards/auth.guard.ts
+  src/app/core/interceptors/auth.interceptor.ts
+  src/app/auth/login/login.component.ts, register/register.component.ts
+  src/app/projects/project-list, project-form, project-detail
+  src/app/tasks/task-form/task-form.component.ts</code></pre>
+
+  <p><strong>This document is the single reference for what each file and block of code does and why each command was run in the project.</strong></p>
+</body>
+</html>

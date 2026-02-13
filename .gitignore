@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+frontend/dist/
+frontend/.angular/
+out-tsc/
+*.tsbuildinfo
+
+# Database (optional: remove this line if you want to commit seed data)
+backend/db/*.db
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# PDF (generated)
+PROJECT_NOTES.pdf
