@@ -5,7 +5,16 @@ Follow these steps **exactly** so the app deploys instead of 404.
 ## How API URL works (dev vs prod)
 
 - **Local dev (PC and mobile):** The app uses the **same host as the page** with port **3000**. Ensure the backend is running.
-- **Production (Vercel):** The app uses `environment.apiUrl` = **`/api`**. The repo’s `vercel.json` has **no** `/api` proxy by default, so the app loads and login will fail until you add a backend. When you have a backend URL, add this rewrite **before** the SPA rewrite in `vercel.json`: `{"source": "/api/:path*", "destination": "https://YOUR_ACTUAL_BACKEND_HOST/api/:path*"}` (replace the host). Or set `apiUrl` in `frontend/src/environments/environment.prod.ts` to your full API URL and redeploy.
+- **Production (Vercel):** By default the app uses `apiUrl` = **`/api`** (same origin). Vercel only serves the frontend, so `/api` returns the app HTML and **login fails**. To fix it, deploy the backend and set the env var below.
+
+## Enable login on Vercel
+
+1. **Deploy the backend** somewhere that gives you a public URL (e.g. [Railway](https://railway.app), [Render](https://render.com), [Fly.io](https://fly.io)). Your API must be at a URL like `https://your-app.railway.app` (with routes like `/api/auth/login`, `/api/projects`, etc.).
+2. In **Vercel** → your project → **Settings** → **Environment Variables**:
+   - **Name:** `NG_APP_API_URL`
+   - **Value:** your backend base URL including `/api`, e.g. `https://your-app.railway.app/api` (no trailing slash after `api`).
+   - Apply to **Production** (and Preview if you want).
+3. **Redeploy** the Vercel project (Deployments → ⋯ → Redeploy). The build runs `node scripts/write-env.js` and writes this URL into the production build, so login and all API calls will go to your backend.
 
 ## Option A: Build from repo root (recommended)
 

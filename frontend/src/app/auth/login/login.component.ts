@@ -71,6 +71,8 @@ export class LoginComponent {
         const msg = err.error?.error;
         if (msg) this.error = msg;
         else if (err.status === 0) this.error = 'Cannot reach server. Is the backend running at http://localhost:3000?';
+        else if (err.status === 200 || (typeof err.error === 'string' && err.error.includes('<')))
+          this.error = 'No API configured. Deploy the backend and set NG_APP_API_URL in Vercel (see README).';
         else this.error = 'Login failed';
       },
     });

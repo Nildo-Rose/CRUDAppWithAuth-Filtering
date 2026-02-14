@@ -120,7 +120,7 @@ The repo has a root `vercel.json` so Vercel builds the Angular app from the `fro
 
 **Alternatively:** Set **Root Directory** to `frontend` in Project Settings; then the `frontend/vercel.json` is used.
 
-**Note:** The live app will call `apiUrl` from `environment.prod.ts` (default `/api`). To use a deployed backend, set the API URL in that file or use environment variables in Vercel.
+**Note:** Login on Vercel requires a deployed backend. Set the env var **NG_APP_API_URL** in Vercel (e.g. `https://your-backend.railway.app/api`) and redeploy. See **VERCEL_DEPLOY.md** for the full checklist.
 
 ## Optional: Production build
 
