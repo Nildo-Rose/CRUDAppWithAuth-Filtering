@@ -4,12 +4,8 @@ Follow these steps **exactly** so the app deploys instead of 404.
 
 ## How API URL works (dev vs prod)
 
-- **Local dev (PC and mobile):** The app uses the **same host as the page** with port **3000** (e.g. `http://localhost:3000/api` on PC, `http://<your-IP>:3000/api` on mobile). No proxy needed; ensure the backend is running and reachable.
-- **Production (Vercel):** The app uses `environment.apiUrl`, which is **`/api`**. So the frontend calls your Vercel domain at `/api/...`. For that to work you must either:
-  1. **Proxy to your backend** – In root `vercel.json`, the first rewrite sends `/api/:path*` to your backend. **Replace `YOUR_BACKEND_URL`** with your real API base (e.g. `https://your-app.railway.app` or `https://your-api.onrender.com`), then redeploy. Requests to `https://your-app.vercel.app/api/auth/login` will be proxied to `https://YOUR_BACKEND_URL/api/auth/login`.
-  2. **Or** deploy no backend and point the frontend at an external API: set `apiUrl` in `frontend/src/environments/environment.prod.ts` to your full API base (e.g. `https://your-api.railway.app/api`), then remove the `/api/:path*` rewrite in `vercel.json` so the SPA rewrite doesn’t catch `/api`.
-
-If you don’t have a backend URL yet, **remove** the first rewrite in `vercel.json` (the one with `"source": "/api/:path*"`). The app will load; login will fail until you add a backend and either proxy it or set `apiUrl` as above. If you use **Option B** (root = `frontend`), edit **frontend/vercel.json** the same way.
+- **Local dev (PC and mobile):** The app uses the **same host as the page** with port **3000**. Ensure the backend is running.
+- **Production (Vercel):** The app uses `environment.apiUrl` = **`/api`**. The repo’s `vercel.json` has **no** `/api` proxy by default, so the app loads and login will fail until you add a backend. When you have a backend URL, add this rewrite **before** the SPA rewrite in `vercel.json`: `{"source": "/api/:path*", "destination": "https://YOUR_ACTUAL_BACKEND_HOST/api/:path*"}` (replace the host). Or set `apiUrl` in `frontend/src/environments/environment.prod.ts` to your full API URL and redeploy.
 
 ## Option A: Build from repo root (recommended)
 
@@ -41,5 +37,10 @@ If you don’t have a backend URL yet, **remove** the first rewrite in `vercel.j
 
 ## After redeploy
 
-- Open the deployment URL (e.g. `crud-app-with-auth-filtering.vercel.app`).
-- You should see the app (Login page or redirect to it). If you still see 404, check the **Build Logs** for that deployment and fix any build errors.
+- Open the deployment URL. You should see the app (Login page or redirect to it).
+
+## Still having issues?
+
+1. **404 on every route** – Vercel may be using dashboard settings instead of `vercel.json`. Go to **Settings** → **Build & Development Settings** and set **Build Command** and **Output Directory** overrides as in Option A or B above, then **Redeploy**.
+2. **Build fails** – Open the deployment → **Building** tab and check the log (e.g. missing `frontend/dist/frontend/browser` means Output Directory is wrong; set it to `frontend/dist/frontend/browser` for Option A).
+3. **Blank page or wrong content** – Confirm **Output Directory** is exactly `frontend/dist/frontend/browser` (Option A) or `dist/frontend/browser` (Option B); Angular 18 puts the app in the `browser` subfolder.

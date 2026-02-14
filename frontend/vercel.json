@@ -5,10 +5,6 @@
   "outputDirectory": "dist/frontend/browser",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://YOUR_BACKEND_URL/api/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
