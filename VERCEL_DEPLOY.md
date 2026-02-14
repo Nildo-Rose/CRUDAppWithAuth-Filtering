@@ -7,6 +7,8 @@ Follow these steps **exactly** so the app deploys instead of 404.
 - **Local dev (PC and mobile):** The app uses the **same host as the page** with port **3000**. Ensure the backend is running.
 - **Production (Vercel):** By default the app uses `apiUrl` = **`/api`** (same origin). Vercel only serves the frontend, so `/api` returns the app HTML and **login fails**. To fix it, deploy the backend and set the env var below.
 
+**If you see "Cannot reach API" or "Login failed" on the live site** → The frontend has no backend yet. Follow **Enable login on Vercel** below.
+
 ## Enable login on Vercel
 
 1. **Deploy the backend** somewhere that gives you a public URL (e.g. [Railway](https://railway.app), [Render](https://render.com), [Fly.io](https://fly.io)). Your API must be at a URL like `https://your-app.railway.app` (with routes like `/api/auth/login`, `/api/projects`, etc.).

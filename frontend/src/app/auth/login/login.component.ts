@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { NgIf } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -70,7 +71,10 @@ export class LoginComponent {
         this.loading = false;
         const msg = err.error?.error;
         if (msg) this.error = msg;
-        else if (err.status === 0) this.error = 'Cannot reach server. Is the backend running at http://localhost:3000?';
+        else if (err.status === 0)
+          this.error = environment.production
+            ? 'Cannot reach API. Deploy the backend (e.g. Railway), then set NG_APP_API_URL in Vercel and redeploy (see VERCEL_DEPLOY.md).'
+            : 'Cannot reach server. Is the backend running at http://localhost:3000?';
         else if (err.status === 200 || (typeof err.error === 'string' && err.error.includes('<')))
           this.error = 'No API configured. Deploy the backend and set NG_APP_API_URL in Vercel (see README).';
         else this.error = 'Login failed';
