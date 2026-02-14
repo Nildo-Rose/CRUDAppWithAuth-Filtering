@@ -2,6 +2,10 @@
 
 Follow these steps **exactly** so the app deploys instead of 404.
 
+## "Error creating build plan with Railpack" (build fails before compiling)
+
+Use **Option B** below: set **Root Directory** to **`frontend`** so Vercel treats the app as a standard Angular project. Building from the repo root with custom commands can trigger this Railpack error.
+
 ## How API URL works (dev vs prod)
 
 - **Local dev (PC and mobile):** The app uses the **same host as the page** with port **3000**. Ensure the backend is running.
@@ -18,27 +22,7 @@ Follow these steps **exactly** so the app deploys instead of 404.
    - Apply to **Production** (and Preview if you want).
 3. **Redeploy** the Vercel project (Deployments → ⋯ → Redeploy). The build runs `node scripts/write-env.js` and writes this URL into the production build, so login and all API calls will go to your backend.
 
-## Option A: Build from repo root (recommended)
-
-1. Open your project on [Vercel](https://vercel.com) → **Settings** → **General**.
-2. **Root Directory**: leave **empty** (do not set `frontend`). Click **Save** if you change it.
-3. Go to **Settings** → **Build & Development Settings**.
-4. **Framework Preset**: choose **Other** (or leave as is; root `vercel.json` sets `framework: null`).
-5. **Build Command**: turn **Override** ON and set:
-   ```bash
-   cd frontend && npm install && npm run build
-   ```
-6. **Output Directory**: turn **Override** ON and set:
-   ```
-   frontend/dist/frontend/browser
-   ```
-7. **Install Command**: turn **Override** ON and set:
-   ```bash
-   cd frontend && npm install
-   ```
-8. Save, then go to **Deployments** → **⋯** on the latest → **Redeploy**.
-
-## Option B: Build from `frontend` folder
+## Option B: Build from `frontend` folder (recommended — avoids Railpack errors)
 
 1. **Settings** → **General** → **Root Directory**: set to **`frontend`** → Save.
 2. **Build & Development Settings**:
@@ -46,12 +30,31 @@ Follow these steps **exactly** so the app deploys instead of 404.
    - **Output Directory** Override: `dist/frontend/browser`
 3. Save and **Redeploy**.
 
+## Option A: Build from repo root
+
+1. Open your project on [Vercel](https://vercel.com) → **Settings** → **General**.
+2. **Root Directory**: leave **empty**. Click **Save** if you change it.
+3. Go to **Settings** → **Build & Development Settings**.
+4. **Framework Preset**: choose **Other**.
+5. **Build Command** Override: `cd frontend && npm install && npm run build`
+6. **Output Directory** Override: `frontend/dist/frontend/browser`
+7. **Install Command** Override: `cd frontend && npm install`
+8. Save, then **Deployments** → **⋯** → **Redeploy**.
+
 ## After redeploy
 
 - Open the deployment URL. You should see the app (Login page or redirect to it).
 
+## Still the same? (Login fails / same error)
+
+- **If you’re on the Vercel URL** (e.g. `crud-app-with-auth-filtering.vercel.app`):
+  1. Set **NG_APP_API_URL** (see “Enable login on Vercel” above) and save.
+  2. **Redeploy**: Deployments → **⋯** on latest → **Redeploy** (use **Redeploy with existing Build Cache** unchecked to force a fresh build).
+  3. In the **Build Logs**, confirm you see: `Wrote environment.prod.ts with apiUrl: https://your-backend...` (not `apiUrl: /api`). If you see `/api`, the env var wasn’t applied — check it’s set for **Production** and redeploy again.
+- **If you’re on your PC at localhost:4200** (local dev): Start the backend first: `cd backend && npm start`. Leave it running, then use the app; otherwise you’ll get “Cannot reach server… localhost:3000”.
+
 ## Still having issues?
 
-1. **404 on every route** – Vercel may be using dashboard settings instead of `vercel.json`. Go to **Settings** → **Build & Development Settings** and set **Build Command** and **Output Directory** overrides as in Option A or B above, then **Redeploy**.
-2. **Build fails** – Open the deployment → **Building** tab and check the log (e.g. missing `frontend/dist/frontend/browser` means Output Directory is wrong; set it to `frontend/dist/frontend/browser` for Option A).
-3. **Blank page or wrong content** – Confirm **Output Directory** is exactly `frontend/dist/frontend/browser` (Option A) or `dist/frontend/browser` (Option B); Angular 18 puts the app in the `browser` subfolder.
+1. **404 on every route** – Set **Build Command** and **Output Directory** overrides as in Option B (or A) above, then **Redeploy**.
+2. **Build fails / "Error creating build plan with Railpack"** – Switch to **Option B**: set **Root Directory** to **`frontend`**, set **Output Directory** to `dist/frontend/browser`, then **Redeploy**. Also check the **Building** tab for other errors.
+3. **Blank page or wrong content** – Confirm **Output Directory** is exactly `dist/frontend/browser` (Option B) or `frontend/dist/frontend/browser` (Option A); Angular 18 puts the app in the `browser` subfolder.
