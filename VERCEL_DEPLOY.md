@@ -22,13 +22,24 @@ Use **Option B** below: set **Root Directory** to **`frontend`** so Vercel treat
    - Apply to **Production** (and Preview if you want).
 3. **Redeploy** the Vercel project (Deployments → ⋯ → Redeploy). The build runs `node scripts/write-env.js` and writes this URL into the production build, so login and all API calls will go to your backend.
 
+## "No start command was found" (Railpack)
+
+Railpack is looking for a Node server. This app is a **static site** (Angular build output). Add this **Environment Variable** in Vercel so Railpack serves the built files:
+
+- **Name:** `RAILPACK_SPA_OUTPUT_DIR`
+- **Value:** `dist/frontend/browser`
+- Apply to **Production** (and Preview if you want).
+
+Then **Redeploy**. Keep **Root Directory** = **`frontend`** and **Output Directory** = `dist/frontend/browser` as in Option B.
+
 ## Option B: Build from `frontend` folder (recommended — avoids Railpack errors)
 
 1. **Settings** → **General** → **Root Directory**: set to **`frontend`** → Save.
 2. **Build & Development Settings**:
    - **Build Command** Override: `npm run build`
    - **Output Directory** Override: `dist/frontend/browser`
-3. Save and **Redeploy**.
+3. **Settings** → **Environment Variables** → add **RAILPACK_SPA_OUTPUT_DIR** = `dist/frontend/browser` (so Railpack treats the app as a static site; see “No start command was found” above).
+4. Save and **Redeploy**.
 
 ## Option A: Build from repo root
 
@@ -57,4 +68,5 @@ Use **Option B** below: set **Root Directory** to **`frontend`** so Vercel treat
 
 1. **404 on every route** – Set **Build Command** and **Output Directory** overrides as in Option B (or A) above, then **Redeploy**.
 2. **Build fails / "Error creating build plan with Railpack"** – Switch to **Option B**: set **Root Directory** to **`frontend`**, set **Output Directory** to `dist/frontend/browser`, then **Redeploy**. Also check the **Building** tab for other errors.
-3. **Blank page or wrong content** – Confirm **Output Directory** is exactly `dist/frontend/browser` (Option B) or `frontend/dist/frontend/browser` (Option A); Angular 18 puts the app in the `browser` subfolder.
+3. **"No start command was found"** – Add env var **RAILPACK_SPA_OUTPUT_DIR** = `dist/frontend/browser` (Settings → Environment Variables), then **Redeploy**. This tells Railpack to serve the Angular build as a static site.
+4. **Blank page or wrong content** – Confirm **Output Directory** is exactly `dist/frontend/browser` (Option B) or `frontend/dist/frontend/browser` (Option A); Angular 18 puts the app in the `browser` subfolder.
