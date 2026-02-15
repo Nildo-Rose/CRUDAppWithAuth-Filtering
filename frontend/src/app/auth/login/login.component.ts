@@ -71,10 +71,12 @@ export class LoginComponent {
         this.loading = false;
         const msg = err.error?.error;
         if (msg) this.error = msg;
-        else if (err.status === 0)
-          this.error = environment.production
+        else if (err.status === 0) {
+          const isVercel = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app');
+          this.error = (environment.production || isVercel)
             ? 'Cannot reach API. Deploy the backend (e.g. Railway), then set NG_APP_API_URL in Vercel and redeploy (see VERCEL_DEPLOY.md).'
             : 'Cannot reach server. Is the backend running at http://localhost:3000?';
+        }
         else if (err.status === 200 || (typeof err.error === 'string' && err.error.includes('<')))
           this.error = 'No API configured. Deploy the backend and set NG_APP_API_URL in Vercel (see README).';
         else this.error = 'Login failed';
