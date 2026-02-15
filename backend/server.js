@@ -1,3 +1,7 @@
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+  process.exit(1);
+});
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -23,5 +27,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://localhost:${PORT} (and on network IP:3000 for mobile)`);
+  console.log(`Server running on port ${PORT}`);
 });

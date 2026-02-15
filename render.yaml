@@ -6,7 +6,7 @@ services:
     name: crud-app-api
     rootDir: backend
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: node server.js
     healthCheckPath: /api/health
     envVars:
       - key: JWT_SECRET
