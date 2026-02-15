@@ -64,8 +64,15 @@ To run the seed script locally against the deployed API you’d need to change t
 
 If the deploy fails with **Running '0'**, **command not found**, or **No open ports detected**:
 
-1. In the **Render Dashboard** → your service → **Settings** → **Build & Deploy**.
-2. Set **Start Command** to exactly: **`node server.js`** (or **`npm start`**). Remove any value that is just `0` or empty.
-3. Save and trigger a **Manual Deploy** (Deployments → **Deploy latest commit**).
+**Fix in the Render Dashboard (do this first):**
 
-The app must listen on the port Render provides (`process.env.PORT`); this backend already does.
+1. Open [Render Dashboard](https://dashboard.render.com) → your **crud-app-api** (or the backend service) → **Settings**.
+2. In **Build & Deploy**, find **Start Command**.
+3. **Clear the field completely** (delete any value, including `0`). Then type exactly one of:
+   - **`bash start.sh`** (uses the script in the repo), or
+   - **`node server.js`**
+4. Confirm **Root Directory** is **`backend`** (no leading slash). If it’s wrong, set it to `backend`.
+5. Click **Save Changes**.
+6. Go to **Deployments** → **Manual Deploy** → **Deploy latest commit**.
+
+If it still fails, delete the service and create a new one: **New** → **Blueprint** → connect the same repo again so it picks up the latest `render.yaml` (which uses `bash start.sh`).
