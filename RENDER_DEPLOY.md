@@ -19,14 +19,14 @@ Follow these steps so the **backend** runs on Render and the **Vercel frontend**
 6. Click **Apply** / **Create resources**. Wait for the first deploy to finish.
 7. Copy the service URL (e.g. `https://crud-app-api-xxxx.onrender.com`). You’ll use it in step 2.
 
-### Option B: Create a Web Service manually
+### Option B: Create a Web Service manually (use this if Blueprint gives "Running '0'")
 
-1. **New** → **Web Service**.
+1. **New** → **Web Service** (not Blueprint).
 2. Connect the repo **CRUDAppWithAuth-Filtering**.
-3. Set **Root Directory** to **`backend`**.
-4. **Build Command:** `npm install`
-5. **Start Command:** `node server.js` (or `npm start`)
-6. **Environment**: Add **JWT_SECRET** (e.g. a long random string) and **NODE_ENV** = `production`.
+3. **Root Directory:** type **`backend`** (no leading slash).
+4. **Build Command:** **`npm install`**
+5. **Start Command:** type **`node server.js`** — do not leave this blank or you may get "Running '0'".
+6. **Environment**: Add **JWT_SECRET** (e.g. a long random string) and **NODE_ENV** = **`production`**.
 7. Create the service, wait for deploy, then copy the service URL.
 
 ---
@@ -75,4 +75,20 @@ If the deploy fails with **Running '0'**, **command not found**, or **No open po
 5. Click **Save Changes**.
 6. Go to **Deployments** → **Manual Deploy** → **Deploy latest commit**.
 
-If it still fails, delete the service and create a new one: **New** → **Blueprint** → connect the same repo again so it picks up the latest `render.yaml` (which uses `bash start.sh`).
+**If it still shows "Running '0'": create the service manually (no Blueprint)**
+
+1. In Render Dashboard, **delete** the current backend service (Settings → bottom → Delete Web Service).
+2. Click **New** → **Web Service** (do **not** use Blueprint).
+3. Connect the same repo **CRUDAppWithAuth-Filtering**.
+4. Fill in **by hand** (do not leave any field as default if it looks wrong):
+   - **Name:** crud-app-api (or any name)
+   - **Region:** pick one
+   - **Branch:** main
+   - **Root Directory:** `backend` (type it; no leading slash)
+   - **Runtime:** Node
+   - **Build Command:** `npm install`
+   - **Start Command:** `node server.js` (type it exactly; do not leave blank)
+5. Click **Advanced** → **Add Environment Variable** → **JWT_SECRET** (value: any long random string) and **NODE_ENV** = `production`.
+6. Create Web Service. Wait for deploy and copy the URL.
+
+Creating the service this way avoids Blueprint parsing; the Start Command is exactly what you type.
