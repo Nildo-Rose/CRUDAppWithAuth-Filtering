@@ -15,10 +15,10 @@ Use **Option B** below: set **Root Directory** to **`frontend`** so Vercel treat
 
 ## Enable login on Vercel
 
-1. **Deploy the backend** somewhere that gives you a public URL (e.g. [Railway](https://railway.app), [Render](https://render.com), [Fly.io](https://fly.io)). Your API must be at a URL like `https://your-app.railway.app` (with routes like `/api/auth/login`, `/api/projects`, etc.).
+1. **Deploy the backend** on [Render](https://render.com). Your API must be at a URL like `https://your-app.onrender.com` (with routes like `/api/auth/login`, `/api/projects`, etc.).
 2. In **Vercel** → your project → **Settings** → **Environment Variables**:
    - **Name:** `NG_APP_API_URL`
-   - **Value:** your backend base URL including `/api`, e.g. `https://your-app.railway.app/api` (no trailing slash after `api`).
+   - **Value:** your backend base URL including `/api`, e.g. `https://your-app.onrender.com/api` (no trailing slash after `api`).
    - Apply to **Production** (and Preview if you want).
 3. **Redeploy** the Vercel project (Deployments → ⋯ → Redeploy). The build runs `node scripts/write-env.js` and writes this URL into the production build, so login and all API calls will go to your backend.
 
