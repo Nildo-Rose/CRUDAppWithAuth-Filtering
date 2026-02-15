@@ -15,7 +15,7 @@ Use **Option B** below: set **Root Directory** to **`frontend`** so Vercel treat
 
 ## Enable login on Vercel
 
-1. **Deploy the backend** on [Render](https://render.com). Your API must be at a URL like `https://your-app.onrender.com` (with routes like `/api/auth/login`, `/api/projects`, etc.).
+1. **Deploy the backend** on [Render](https://render.com). Use the repo’s **Blueprint** (see **[RENDER_DEPLOY.md](RENDER_DEPLOY.md)** for step-by-step instructions). Your API will be at a URL like `https://your-app.onrender.com` (with routes like `/api/auth/login`, `/api/projects`, etc.).
 2. In **Vercel** → your project → **Settings** → **Environment Variables**:
    - **Name:** `NG_APP_API_URL`
    - **Value:** your backend base URL including `/api`, e.g. `https://your-app.onrender.com/api` (no trailing slash after `api`).

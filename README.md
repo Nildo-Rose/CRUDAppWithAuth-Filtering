@@ -120,7 +120,7 @@ The repo has a root `vercel.json` so Vercel builds the Angular app from the `fro
 
 **Alternatively:** Set **Root Directory** to `frontend` in Project Settings; then the `frontend/vercel.json` is used.
 
-**Note:** Login on Vercel requires a deployed backend. Set the env var **NG_APP_API_URL** in Vercel (e.g. `https://your-backend.onrender.com/api`) and redeploy. See **VERCEL_DEPLOY.md** for the full checklist.
+**Note:** Login on Vercel requires a deployed backend. Deploy the backend on Render using the repo’s **Blueprint** and **RENDER_DEPLOY.md**, then set **NG_APP_API_URL** in Vercel and redeploy. See **VERCEL_DEPLOY.md** for the full checklist.
 
 ## Optional: Production build
 
