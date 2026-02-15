@@ -13,7 +13,7 @@ Follow these steps so the **backend** runs on Render and the **Vercel frontend**
    - **Name:** crud-app-api
    - **Root Directory:** backend
    - **Build Command:** npm install
-   - **Start Command:** npm start
+   - **Start Command:** `node server.js` (or `npm start`)
    - **Health Check Path:** /api/health
 5. **JWT_SECRET** is set to “Generate” in the Blueprint; you can leave it or replace with your own secret in the service **Environment** tab after creation.
 6. Click **Apply** / **Create resources**. Wait for the first deploy to finish.
@@ -25,7 +25,7 @@ Follow these steps so the **backend** runs on Render and the **Vercel frontend**
 2. Connect the repo **CRUDAppWithAuth-Filtering**.
 3. Set **Root Directory** to **`backend`**.
 4. **Build Command:** `npm install`
-5. **Start Command:** `npm start`
+5. **Start Command:** `node server.js` (or `npm start`)
 6. **Environment**: Add **JWT_SECRET** (e.g. a long random string) and **NODE_ENV** = `production`.
 7. Create the service, wait for deploy, then copy the service URL.
 
@@ -57,3 +57,15 @@ The backend uses SQLite. On Render the filesystem is ephemeral, so the DB is rec
 - Use **Register** on the live app to create an account.
 
 To run the seed script locally against the deployed API you’d need to change the app to hit the Render URL; the normal seed script runs against the local DB.
+
+---
+
+## Troubleshooting: "Running '0'" / "No open ports" / Exit 127
+
+If the deploy fails with **Running '0'**, **command not found**, or **No open ports detected**:
+
+1. In the **Render Dashboard** → your service → **Settings** → **Build & Deploy**.
+2. Set **Start Command** to exactly: **`node server.js`** (or **`npm start`**). Remove any value that is just `0` or empty.
+3. Save and trigger a **Manual Deploy** (Deployments → **Deploy latest commit**).
+
+The app must listen on the port Render provides (`process.env.PORT`); this backend already does.
