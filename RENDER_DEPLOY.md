@@ -13,7 +13,7 @@ Follow these steps so the **backend** runs on Render and the **Vercel frontend**
    - **Name:** crud-app-api
    - **Root Directory:** backend
    - **Build Command:** npm install
-   - **Start Command:** `node server.js` (or `npm start`)
+   - **Start Command:** `npm start` (or `node server.js`)
    - **Health Check Path:** /api/health
 5. **JWT_SECRET** is set to “Generate” in the Blueprint; you can leave it or replace with your own secret in the service **Environment** tab after creation.
 6. Click **Apply** / **Create resources**. Wait for the first deploy to finish.
@@ -25,7 +25,7 @@ Follow these steps so the **backend** runs on Render and the **Vercel frontend**
 2. Connect the repo **CRUDAppWithAuth-Filtering**.
 3. **Root Directory:** type **`backend`** (no leading slash).
 4. **Build Command:** **`npm install`**
-5. **Start Command:** type **`node server.js`** — do not leave this blank or you may get "Running '0'".
+5. **Start Command:** type **`npm start`** — do not leave this blank or you may get "Running '0'".
 6. **Environment**: Add **JWT_SECRET** (e.g. a long random string) and **NODE_ENV** = **`production`**.
 7. Create the service, wait for deploy, then copy the service URL.
 
@@ -60,35 +60,29 @@ To run the seed script locally against the deployed API you’d need to change t
 
 ---
 
-## Troubleshooting: "Running '0'" / "No open ports" / Exit 127
+## Troubleshooting
 
-If the deploy fails with **Running '0'**, **command not found**, or **No open ports detected**:
+### "Running '0'" / "No open ports" / Exit 127
 
-**Fix in the Render Dashboard (do this first):**
+1. Open [Render Dashboard](https://dashboard.render.com) → your backend service → **Settings** → **Build & Deploy**.
+2. Find **Start Command**. If it shows **`0`** or is **empty**, that causes the error.
+3. **Clear the field** and type exactly: **`npm start`** (or **`node server.js`**). Save.
+4. Check **Root Directory** is **`backend`**. Save.
+5. **Deployments** → **Manual Deploy** → **Deploy latest commit**.
 
-1. Open [Render Dashboard](https://dashboard.render.com) → your **crud-app-api** (or the backend service) → **Settings**.
-2. In **Build & Deploy**, find **Start Command**.
-3. **Clear the field completely** (delete any value, including `0`). Then type exactly one of:
-   - **`bash start.sh`** (uses the script in the repo), or
-   - **`node server.js`**
-4. Confirm **Root Directory** is **`backend`** (no leading slash). If it’s wrong, set it to `backend`.
-5. Click **Save Changes**.
-6. Go to **Deployments** → **Manual Deploy** → **Deploy latest commit**.
+**If it still fails:** Delete the service (Settings → Delete Web Service). Create a **new Web Service** (New → Web Service, **not** Blueprint):
 
-**If it still shows "Running '0'": create the service manually (no Blueprint)**
+- **Root Directory:** `backend`
+- **Build Command:** `npm install`
+- **Start Command:** type **`npm start`** (do not skip; if the field is empty or "0", that’s the bug).
+- **Environment:** JWT_SECRET (any long string), NODE_ENV = `production`
 
-1. In Render Dashboard, **delete** the current backend service (Settings → bottom → Delete Web Service).
-2. Click **New** → **Web Service** (do **not** use Blueprint).
-3. Connect the same repo **CRUDAppWithAuth-Filtering**.
-4. Fill in **by hand** (do not leave any field as default if it looks wrong):
-   - **Name:** crud-app-api (or any name)
-   - **Region:** pick one
-   - **Branch:** main
-   - **Root Directory:** `backend` (type it; no leading slash)
-   - **Runtime:** Node
-   - **Build Command:** `npm install`
-   - **Start Command:** `node server.js` (type it exactly; do not leave blank)
-5. Click **Advanced** → **Add Environment Variable** → **JWT_SECRET** (value: any long random string) and **NODE_ENV** = `production`.
-6. Create Web Service. Wait for deploy and copy the URL.
+Before clicking **Create**, confirm the Start Command field shows `npm start` or `node server.js`, not `0` or blank.
 
-Creating the service this way avoids Blueprint parsing; the Start Command is exactly what you type.
+### Build fails (e.g. better-sqlite3 / native module)
+
+If the **build** fails (not the deploy step), the log may mention **better-sqlite3** or **node-gyp**. Render’s Node image usually has build tools; if not, try setting **Environment Variable** **NODE_VERSION** = **`20`** (or `18`) and redeploy. If it still fails, share the exact error from the build log.
+
+### Service starts but requests fail / 503
+
+If the deploy succeeds but the app doesn’t respond, check the **Logs** tab for crashes. The app must listen on **`process.env.PORT`**; this backend already does.
