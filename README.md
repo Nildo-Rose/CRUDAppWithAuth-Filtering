@@ -66,21 +66,14 @@ npm install
 npm start
 ```
 
-App runs at **http://localhost:4200**. The dev server proxies `/api` to the backend, so the same setup works on **PC and mobile** (see below).
-
-### PC and mobile (same network)
-
-1. Start the backend: `cd backend && npm start`.
-2. Start the frontend: `cd frontend && npm start` (serves with `--host 0.0.0.0` so the network can connect).
-3. **On PC:** open **http://localhost:4200**.
-4. **On phone/tablet (same Wi‑Fi):** find your PC’s IP (e.g. `ipconfig` on Windows), then open **http://\<PC-IP\>:4200** (e.g. `http://192.168.1.5:4200`). Login and API calls go through the dev server proxy to the backend, so both work the same way.
+App runs at **http://localhost:4200**. The dev server proxies `/api` to the backend on your PC.
 
 ### First run
 
 1. Start backend, then frontend.
 2. Open http://localhost:4200 → redirects to **Login**.
 3. Use **Register** to create an account, or after `npm run seed` use **demo@example.com** / **password123**.
-4. After login you’ll see **Projects**. Create a project, open it, add tasks, and use search/filters.
+4. After login you'll see **Projects**. Create a project, open it, add tasks, and use search/filters.
 
 ## API Overview
 
@@ -110,17 +103,15 @@ All project and task routes require `Authorization: Bearer <token>`.
 - **Validation**: Backend uses express-validator for inputs; frontend uses reactive forms and required/minLength validators.
 - **Errors**: API returns `{ error: "message" }` or `{ error: "Validation failed", details: [...] }`; frontend shows them in forms and does not expose stack traces.
 
-## Deploy frontend on Vercel
+## Deploy on Vercel (frontend only)
 
-The repo has a root `vercel.json` so Vercel builds the Angular app from the `frontend` folder and serves it with SPA rewrites.
+Deploy the Angular frontend to Vercel:
 
 1. Import the repo at [vercel.com/new](https://vercel.com/new).
-2. Leave **Root Directory** empty (the root `vercel.json` handles the build).
+2. Either leave **Root Directory** empty (root `vercel.json` builds from `frontend`) or set **Root Directory** to `frontend` and use `frontend/vercel.json`.
 3. Deploy. The app will be at your `*.vercel.app` URL.
 
-**Alternatively:** Set **Root Directory** to `frontend` in Project Settings; then the `frontend/vercel.json` is used.
-
-**Note:** Login on Vercel requires a deployed backend. Deploy the backend on Render using the repo’s **Blueprint** and **RENDER_DEPLOY.md**, then set **NG_APP_API_URL** in Vercel and redeploy. See **VERCEL_DEPLOY.md** for the full checklist.
+**Login on the live site:** Set **NG_APP_API_URL** in Vercel (Settings → Environment Variables) to your backend URL including `/api` (e.g. `https://your-backend.example.com/api`), then redeploy. See **VERCEL_DEPLOY.md** for the full checklist.
 
 ## Optional: Production build
 
