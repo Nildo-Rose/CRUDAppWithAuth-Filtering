@@ -1,6 +1,7 @@
 {
   "name": "crud-app-with-auth-filtering",
   "private": true,
+  "engines": { "node": "20.x" },
   "scripts": {
     "notes:pdf": "npx -y md-to-pdf PROJECT_NOTES.md -o PROJECT_NOTES.pdf"
   }
