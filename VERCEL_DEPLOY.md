@@ -1,58 +1,39 @@
 # Deploy on Vercel – Checklist
 
-Use this guide to deploy the **frontend** to Vercel and fix common issues. The app is intended for **PC** (local dev) and **Vercel** (frontend only).
+The app runs **entirely on Vercel** (frontend + API). Deploy from **repo root** so both the Angular app and the serverless API are built and deployed.
+
+## Vercel-only (API on Vercel)
+
+1. In Vercel → your project → **Settings** → **General** → **Root Directory**: leave **empty** so the repo root is used.
+2. The root `vercel.json` already sets:
+   - **Install:** `cd backend && npm install && cd ../frontend && npm install`
+   - **Build:** `cd frontend && npm run build`
+   - **Output:** `frontend/dist/frontend/browser`
+   - **Rewrites:** `/api/*` → serverless API, everything else → SPA.
+3. Deploy. No **NG_APP_API_URL** needed: the frontend uses `/api` (same origin) and the API runs as a Vercel serverless function.
+
+Use **Register** on the live site to create an account (the serverless DB is ephemeral; data may reset on cold starts).
+
+## If you use Root Directory = `frontend`
+
+Then only the frontend is deployed and there is no API on Vercel. Either:
+
+- Switch to **Root Directory: empty** (above), or  
+- Deploy the backend elsewhere and set **NG_APP_API_URL** in Vercel to that backend URL + `/api`, then redeploy.
 
 ## How API URL works
 
-- **Local dev (PC):** The app uses **http://localhost:3000/api**. Start the backend with `cd backend && npm start`.
-- **Production (Vercel):** Set **NG_APP_API_URL** in Vercel to your backend base URL including `/api` (e.g. `https://your-backend.example.com/api`). If you don’t set it, the live app has no backend and login will fail.
+- **Local dev (PC):** Run `cd backend && npm start` and `cd frontend && npm start`. The app uses **http://localhost:3000/api**.
+- **Production (Vercel, repo root):** Frontend uses `/api`; `/api/*` is handled by the serverless function in the `api/` folder (same domain).
 
-## Enable login on Vercel
+## Build / Railpack issues
 
-1. Host your backend somewhere (e.g. your own server, or any Node host that runs the `backend` folder).
-2. In **Vercel** → your project → **Settings** → **Environment Variables**:
-   - **Name:** `NG_APP_API_URL`
-   - **Value:** your backend base URL including `/api`, e.g. `https://your-backend.example.com/api` (no trailing slash after `api`).
-   - Apply to **Production** (and Preview if you want).
-3. **Redeploy** (Deployments → ⋯ → Redeploy). The build writes this URL into the production build so login and API calls use your backend.
-
-## "Error creating build plan with Railpack" (build fails)
-
-Set **Root Directory** to **`frontend`** so Vercel treats the app as a standard Angular project:
-
-1. **Settings** → **General** → **Root Directory**: `frontend` → Save.
-2. **Build & Development Settings**: **Build Command** = `npm run build`, **Output Directory** = `dist/frontend/browser`.
-3. Add env var **RAILPACK_SPA_OUTPUT_DIR** = `dist/frontend/browser` (so Vercel serves the static build).
-4. Save and **Redeploy**.
-
-## Option B: Build from `frontend` folder (recommended)
-
-1. **Settings** → **General** → **Root Directory**: `frontend` → Save.
-2. **Build & Development Settings**: **Build Command** = `npm run build`, **Output Directory** = `dist/frontend/browser`.
-3. **Environment Variables**: **RAILPACK_SPA_OUTPUT_DIR** = `dist/frontend/browser`.
-4. Save and **Redeploy**.
-
-## Option A: Build from repo root
-
-1. **Root Directory**: leave **empty**.
-2. **Build Command**: `cd frontend && npm install && npm run build`
-3. **Output Directory**: `frontend/dist/frontend/browser`
-4. **Install Command**: `cd frontend && npm install`
-5. Save and **Redeploy**.
-
-## After redeploy
-
-Open the deployment URL. You should see the app (Login page or redirect). If login fails, set **NG_APP_API_URL** and redeploy.
+- **"Error creating build plan with Railpack"** – Use **Root Directory: empty** and let the root `vercel.json` drive the build (or set Overrides to match it).
+- **"No start command was found"** – Add **RAILPACK_SPA_OUTPUT_DIR** = `dist/frontend/browser` (only needed if you override Root Directory to `frontend`).
+- **404 / blank page** – Confirm **Output Directory** is `frontend/dist/frontend/browser` when building from repo root.
 
 ## Local dev (PC)
 
-- Start backend: `cd backend && npm start`.
-- Start frontend: `cd frontend && npm start`.
-- Open **http://localhost:4200**. The dev server proxies `/api` to the backend at port 3000.
-
-## Still having issues?
-
-1. **404 on every route** – Set **Build Command** and **Output Directory** as in Option B (or A), then **Redeploy**.
-2. **Build fails / Railpack error** – Use **Option B**: Root Directory = `frontend`, Output Directory = `dist/frontend/browser`, then **Redeploy**.
-3. **"No start command was found"** – Add **RAILPACK_SPA_OUTPUT_DIR** = `dist/frontend/browser`, then **Redeploy**.
-4. **Blank page** – Confirm **Output Directory** is exactly `dist/frontend/browser` (Option B) or `frontend/dist/frontend/browser` (Option A).
+- Backend: `cd backend && npm start`
+- Frontend: `cd frontend && npm start`
+- Open **http://localhost:4200** (dev server proxies `/api` to port 3000).

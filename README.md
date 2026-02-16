@@ -108,11 +108,10 @@ All project and task routes require `Authorization: Bearer <token>`.
 Deploy the Angular frontend to Vercel:
 
 1. Import the repo at [vercel.com/new](https://vercel.com/new).
-2. Either leave **Root Directory** empty (root `vercel.json` builds from `frontend`) or set **Root Directory** to `frontend` and use `frontend/vercel.json`.
+2. Leave **Root Directory** empty so the root `vercel.json` is used (builds frontend and deploys the API on Vercel).
 3. Deploy. The app will be at your `*.vercel.app` URL.
 
-**Login on the live site:** Set **NG_APP_API_URL** in Vercel (Settings → Environment Variables) to your backend URL including `/api` (e.g. `https://your-backend.example.com/api`), then redeploy. See **VERCEL_DEPLOY.md** for the full checklist.
-
+**Login on the live site:** Deploy from repo root; the API runs on Vercel. See **VERCEL_DEPLOY.md**. 
 ## Optional: Production build
 
 - **Backend**: Set `NODE_ENV=production` and a strong `JWT_SECRET` in `.env`.
