@@ -72,13 +72,10 @@ export class LoginComponent {
         const msg = err.error?.error;
         if (msg) this.error = msg;
         else if (err.status === 0) {
-          const isVercel = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app');
-          this.error = (environment.production || isVercel)
-            ? 'Cannot reach API. In Vercel: Settings → General → set Root Directory to empty (repo root) and redeploy so the API is included.'
-            : 'Cannot reach server. Is the backend running at http://localhost:3000?';
+          this.error = 'Cannot reach server. Is the backend running at http://localhost:3000?';
         }
         else if (err.status === 200 || (typeof err.error === 'string' && err.error.includes('<')))
-          this.error = 'No API. Set Vercel Root Directory to empty (repo root) and redeploy (see VERCEL_DEPLOY.md).';
+          this.error = 'No API configured. Ensure the backend is running and reachable.';
         else this.error = 'Login failed';
       },
     });

@@ -10,6 +10,3 @@ const content = `export const environment = {
 `;
 fs.writeFileSync(outPath, content, 'utf8');
 console.log('Wrote environment.prod.ts with apiUrl:', apiUrl);
-if (apiUrl === '/api' && process.env.VERCEL) {
-  console.warn('Vercel build: NG_APP_API_URL is not set. Login will fail until you set it in Project Settings → Environment Variables and redeploy.');
-}

@@ -29,7 +29,7 @@ export interface PaginatedResponse<T> {
   pagination: { page: number; limit: number; total: number; totalPages: number };
 }
 
-/** API base URL: in dev uses localhost:3000; in prod uses env.apiUrl (set NG_APP_API_URL in Vercel). */
+/** API base URL: in dev uses localhost:3000; in prod uses env.apiUrl (/api for local build). */
 function getApiBase(): string {
   if (!environment.production && typeof window !== 'undefined') {
     return `${window.location.protocol}//${window.location.hostname}:3000/api`;

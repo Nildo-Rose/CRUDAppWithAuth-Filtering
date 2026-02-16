@@ -103,15 +103,6 @@ All project and task routes require `Authorization: Bearer <token>`.
 - **Validation**: Backend uses express-validator for inputs; frontend uses reactive forms and required/minLength validators.
 - **Errors**: API returns `{ error: "message" }` or `{ error: "Validation failed", details: [...] }`; frontend shows them in forms and does not expose stack traces.
 
-## Deploy on Vercel (frontend only)
-
-Deploy the Angular frontend to Vercel:
-
-1. Import the repo at [vercel.com/new](https://vercel.com/new).
-2. Leave **Root Directory** empty so the root `vercel.json` is used (builds frontend and deploys the API on Vercel).
-3. Deploy. The app will be at your `*.vercel.app` URL.
-
-**Login on the live site:** Deploy from repo root; the API runs on Vercel. See **VERCEL_DEPLOY.md**. 
 ## Optional: Production build
 
 - **Backend**: Set `NODE_ENV=production` and a strong `JWT_SECRET` in `.env`.
