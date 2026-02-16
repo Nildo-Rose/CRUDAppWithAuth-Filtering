@@ -1,5 +1,11 @@
 # Deploy on Vercel – Checklist
 
+## "Cannot reach API" on the login page?
+
+**Fix:** In Vercel → **Settings** → **General** → **Root Directory**: set to **empty** (clear the field so the repo root is used, not `frontend`). Then **Redeploy**. The API lives in the repo root (`api/` folder); if Root Directory is `frontend`, only the frontend is deployed and there is no API.
+
+---
+
 The app runs **entirely on Vercel** (frontend + API). Deploy from **repo root** so both the Angular app and the serverless API are built and deployed.
 
 ## Vercel-only (API on Vercel)
