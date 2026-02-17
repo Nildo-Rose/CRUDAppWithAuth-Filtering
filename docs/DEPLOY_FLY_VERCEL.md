@@ -4,6 +4,8 @@ This guide gets the full app working with the backend on **Fly.io** and the fron
 
 ## 1. Deploy the backend to Fly.io
 
+**Important:** All `fly` commands must be run from the **`backend`** directory (where the Dockerfile and `fly.toml` live). Running from the project root will fail with "Could not find a Dockerfile".
+
 ### Prerequisites
 
 - [Fly.io account](https://fly.io/app/sign-up)
@@ -11,7 +13,7 @@ This guide gets the full app working with the backend on **Fly.io** and the fron
 
 ### Steps
 
-1. **Log in** and **create the app** (from the repo root, then `backend`):
+1. **Open the backend folder**, then log in and create the app:
 
    ```bash
    cd backend

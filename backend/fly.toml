@@ -3,6 +3,7 @@
 # Set secret: fly secrets set JWT_SECRET=your-production-secret
 
 app = "crud-app-api"
+primary_region = "iad"
 
 [build]
   dockerfile = "Dockerfile"

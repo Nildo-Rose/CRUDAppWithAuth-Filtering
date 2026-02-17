@@ -108,7 +108,7 @@ SQLite data is stored in a volume (`backend-data`). See `backend/Dockerfile`, `f
 
 To have the **Vercel** frontend use a live API:
 
-1. **Deploy the backend to [Fly.io](https://fly.io):** from `backend/`, create a volume, set `JWT_SECRET`, and run `fly deploy`. See **[docs/DEPLOY_FLY_VERCEL.md](docs/DEPLOY_FLY_VERCEL.md)** for step-by-step commands.
+1. **Deploy the backend to [Fly.io](https://fly.io):** run all `fly` commands from the **`backend/`** directory (so the Dockerfile is found). Create a volume, set `JWT_SECRET`, then `fly deploy`. See **[docs/DEPLOY_FLY_VERCEL.md](docs/DEPLOY_FLY_VERCEL.md)** for step-by-step commands.
 2. **On Vercel:** add an environment variable **`NG_APP_API_URL`** = `https://<your-fly-app>.fly.dev/api` (Production), then redeploy the frontend.
 
 The build script `frontend/scripts/write-env.js` injects `NG_APP_API_URL` into the production build so the app calls your Fly API.
