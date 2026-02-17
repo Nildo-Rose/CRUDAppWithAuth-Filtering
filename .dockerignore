@@ -1,0 +1,9 @@
+# Root Dockerfile only builds backend; ignore the rest for smaller context
+frontend
+.git
+.github
+docs
+*.md
+.env
+.env.*
+node_modules

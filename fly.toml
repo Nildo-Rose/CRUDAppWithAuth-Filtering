@@ -1,0 +1,31 @@
+# Used when Fly deploys from repo root (e.g. GitHub integration).
+# Same app as backend/fly.toml. For CLI: cd backend && fly deploy
+
+app = "crud-app-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  DB_DIR = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "5s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "3s"
+
+[mounts]
+  source = "data"
+  destination = "/data"
