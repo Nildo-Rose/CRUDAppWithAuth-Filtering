@@ -2,8 +2,8 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const os = require('os');
 
-// On Render (and similar), app dir may be read-only; use /tmp so SQLite can write
-const dbDir = process.env.NODE_ENV === 'production' ? os.tmpdir() : __dirname;
+// DB path: env DB_DIR (e.g. Docker volume), or production -> /tmp, else project dir
+const dbDir = process.env.DB_DIR || (process.env.NODE_ENV === 'production' ? os.tmpdir() : __dirname);
 const dbPath = path.join(dbDir, 'app.db');
 const db = new Database(dbPath);
 

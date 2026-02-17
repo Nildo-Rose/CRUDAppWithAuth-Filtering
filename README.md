@@ -75,6 +75,50 @@ App runs at **http://localhost:4200**. The dev server proxies `/api` to the back
 3. Use **Register** to create an account, or after `npm run seed` use **demo@example.com** / **password123**.
 4. After login you'll see **Projects**. Create a project, open it, add tasks, and use search/filters.
 
+### Docker
+
+**Requires:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or Docker Engine + Docker Compose). Start Docker Desktop before running commands.
+
+Build the images:
+
+```bash
+docker compose build
+```
+
+Or use the PowerShell script from the project root:
+
+```powershell
+.\build-docker.ps1
+```
+
+Run the whole stack (backend + frontend):
+
+```bash
+docker compose up --build
+```
+
+*(On some setups the command is `docker-compose` with a hyphen.)*
+
+- **Backend:** http://localhost:3000  
+- **Frontend:** http://localhost:4200 (nginx proxies `/api` to the backend)
+
+SQLite data is stored in a volume (`backend-data`). See `backend/Dockerfile`, `frontend/Dockerfile`, and `frontend/nginx.conf` for details.
+
+### Testing (backend)
+
+In `backend`:
+
+```bash
+npm install
+npm test
+```
+
+Uses **Jest** and **supertest**; tests hit a temporary SQLite DB and cover `/api/health` and auth (register/login validation and success).
+
+### API documentation
+
+Full request/response examples, query parameters, and error format: **[docs/API.md](docs/API.md)**.
+
 ## API Overview
 
 | Method | Endpoint | Description |
