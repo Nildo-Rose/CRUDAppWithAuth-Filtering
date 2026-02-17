@@ -49,7 +49,15 @@ This guide gets the full app working with the backend on **Fly.io** and the fron
 
    You should see `{"ok":true}`. Your backend URL is **`https://crud-app-api.fly.dev`** (or your app name).
 
-6. **(Optional) Seed a demo user** (run once, then remove or keep for testing):
+6. **If you deploy via GitHub** (Fly.io “Deploy” or CI), the app may have a different name (e.g. `crudappwithauth-filtering-60obkq`). You still must **create the volume** for that app, in the region your `fly.toml` uses (e.g. `iad`):
+
+   ```bash
+   fly volumes create data --region iad --app YOUR_APP_NAME --size 1
+   ```
+
+   If the error says `iad=2`, create two volumes (run the command twice, or use `-n 2` if your CLI supports it). Then redeploy.
+
+7. **(Optional) Seed a demo user** (run once, then remove or keep for testing):
 
    ```bash
    fly ssh console
@@ -89,7 +97,28 @@ The backend uses `cors({ origin: true, credentials: true })`, so the Vercel orig
 
 ---
 
-## 4. Summary
+## 4. Troubleshooting
+
+### "Process group 'app' needs volumes with name 'data'"
+
+The app’s `fly.toml` mounts a volume named `data` for SQLite. Create it for **your** app and region (e.g. `iad=2` means 2 volumes in `iad`):
+
+```bash
+fly volumes create data --region iad --app crudappwithauth-filtering-60obkq --size 1
+fly volumes create data --region iad --app crudappwithauth-filtering-60obkq --size 1
+```
+
+Replace `crudappwithauth-filtering-60obkq` with your app name if different. Then trigger a new deploy (push a commit or “Redeploy” in the Fly dashboard).
+
+### Set JWT_SECRET for the same app
+
+```bash
+fly secrets set JWT_SECRET=your-secure-secret --app crudappwithauth-filtering-60obkq
+```
+
+---
+
+## 5. Summary
 
 | Where   | URL (example)                          | Role                    |
 |--------|----------------------------------------|-------------------------|
